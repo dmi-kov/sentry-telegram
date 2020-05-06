@@ -108,9 +108,6 @@ class TelegramNotificationsPlugin(notify.NotificationPlugin):
             'message': event.message,
             'project_name': group.project.name,
             'url': group.get_absolute_url(),
-            'real': event.real_message,
-            'raw': event.get_raw_data,
-            'dist': event.dist,
         }
 
         template = self.get_message_template(group.project)
@@ -145,6 +142,14 @@ class TelegramNotificationsPlugin(notify.NotificationPlugin):
         self.logger.debug('Response code: %s, content: %s' % (response.status_code, response.content))
 
     def notify_users(self, group, event, fail_silently=False, **kwargs):
+
+        def dump(obj):
+            for attr in dir(obj):
+                if hasattr(obj, attr):
+                    self.logger.info("obj.%s = %s" % (attr, getattr(obj, attr)))
+
+        dump(event)
+
         self.logger.info('Received notification for event: %s' % event)
         receivers = self.get_receivers(group.project)
         self.logger.debug('for receivers: %s' % ', '.join(receivers or ()))
