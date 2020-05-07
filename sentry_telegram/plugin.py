@@ -1,5 +1,6 @@
 # coding: utf-8
 import logging
+import json
 from collections import defaultdict
 
 from django import forms
@@ -103,7 +104,7 @@ class TelegramNotificationsPlugin(notify.NotificationPlugin):
         the_tags = defaultdict(lambda: '[NA]')
         the_tags.update({k:v for k, v in event.tags})
         raw = event.get_raw_data()
-        extra = raw.get("extra", "no additional data provided")
+        extra = json.dumps(raw.get("extra", "no additional data provided"))
         names = {
             'title': event.title,
             'tag': the_tags,
