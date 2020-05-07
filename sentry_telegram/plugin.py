@@ -102,12 +102,15 @@ class TelegramNotificationsPlugin(notify.NotificationPlugin):
     def build_message(self, group, event):
         the_tags = defaultdict(lambda: '[NA]')
         the_tags.update({k:v for k, v in event.tags})
+        raw = event.get_raw_data()
+        extra = raw.get("extra", "no additional data provided")
         names = {
             'title': event.title,
             'tag': the_tags,
             'message': event.message,
             'project_name': group.project.name,
             'url': group.get_absolute_url(),
+            'extra': extra,
         }
 
         template = self.get_message_template(group.project)
@@ -142,7 +145,7 @@ class TelegramNotificationsPlugin(notify.NotificationPlugin):
         self.logger.debug('Response code: %s, content: %s' % (response.status_code, response.content))
 
     def notify_users(self, group, event, fail_silently=False, **kwargs):
-        self.logger.info('Received notification for event: %s' % event.as_dict())
+        self.logger.info('Received notification for event: %s' % event)
         receivers = self.get_receivers(group.project)
         self.logger.debug('for receivers: %s' % ', '.join(receivers or ()))
         payload = self.build_message(group, event)
