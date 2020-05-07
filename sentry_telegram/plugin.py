@@ -103,17 +103,14 @@ class TelegramNotificationsPlugin(notify.NotificationPlugin):
         the_tags = defaultdict(lambda: '[NA]')
         the_tags.update({k:v for k, v in event.tags})
         raw = event.get_raw_data()
-
-        self.logger.info('raw data: %s' % raw)
-
-        # extra = raw.get("extra", "no additional data provided")
+        extra = raw.get("extra", "no additional data provided")
         names = {
             'title': event.title,
             'tag': the_tags,
             'message': event.message,
             'project_name': group.project.name,
             'url': group.get_absolute_url(),
-            'extra': raw,
+            'extra': extra,
         }
 
         template = self.get_message_template(group.project)
